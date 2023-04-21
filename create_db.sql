@@ -1,14 +1,33 @@
 
-CREATE TABLE users (
-    user_id BIGINT PRIMARY KEY,
+CREATE TABLE practice (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    initials VARCHAR(255),
-    date_of_birthday VARCHAR(255),
+    user_id INTEGER PRIMARY KEY,
+    name TEXT,
+    date_of_birthday DATE,
     age INTEGER,
-    sex VARCHAR(30),
-    email VARCHAR(255),
-    phone VARCHAR(30) DEFAULT NULL,
-    university VARCHAR(255) DEFAULT NULL,
-    season VARCHAR(30) DEFAULT NULL,
-    result INTEGER DEFAULT NULL
+    sex TEXT,
+    email TEXT,
+    phone TEXT,
+    university TEXT,
+    season TEXT,
+    test_result INTEGER
+);
+
+CREATE TABLE internship (
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    user_id INTEGER PRIMARY KEY,
+    name TEXT,
+    date_of_birthday DATE,
+    age INTEGER,
+    sex TEXT,
+    email TEXT,
+    phone TEXT,
+    university TEXT,
+    season TEXT,
+    test_result INTEGER
+);
+
+CREATE TABLE administrators (
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    user_id INTEGER PRIMARY KEY
 );

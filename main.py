@@ -11,12 +11,14 @@ from config import TELEGRAM_BOT_API_TOKEN, WEBHOOK_URL_PATH
 from handlers import callback
 from handlers.commands import start, info, test_, survey, resume, university, info_personal_reception, season, feedback
 from handlers.get_info_from_user import get_user_name, get_date_of_birthday, name_incorrect, date_incorrect, \
-    get_user_sex, sex_incorrect, get_user_email, email_incorrect, get_user_phone, phone_incorrect, delete_state_
-from handlers.send_data import send_users_data, receive_resume, resume_answer_yes, resume_incorrect
+    get_user_sex, sex_incorrect, get_user_email, email_incorrect, get_user_phone, phone_incorrect, delete_state_, \
+    get_university, university_incorrect, receive_resume, resume_incorrect, choose_direction, direction_incorrect, \
+    get_season, season_incorrect
+from handlers.send_data import send_users_data
 from handlers.test_for_users import get_answer_to_question, start_test
 from services.states import MyStates
 from services.filters import CheckDate, CheckPhoneNumber, CheckUserName, CheckSex, CheckConsent, CheckEmail, \
-    CheckAnswerInTest, ContactForm, CheckAnswer, CheckFile
+    CheckAnswerInTest, ContactForm, CheckAnswer, CheckFile, CheckUniversity, CheckDirection, CheckSeason
 
 logging.basicConfig(handlers=(logging.StreamHandler(),),
                     format="%(name)s %(asctime)s - %(levelname)s - %(message)s",
@@ -30,6 +32,7 @@ bot = telebot.TeleBot(TELEGRAM_BOT_API_TOKEN, state_storage=StateRedisStorage(db
 FILTERS = (custom_filters.StateFilter(bot),
            custom_filters.IsDigitFilter(),
            custom_filters.TextMatchFilter(),
+           CheckDirection(),
            CheckUserName(),
            CheckDate(),
            CheckSex(),
@@ -39,6 +42,8 @@ FILTERS = (custom_filters.StateFilter(bot),
            CheckConsent(),
            CheckAnswer(),
            CheckFile(),
+           CheckUniversity(),
+           CheckSeason(),
            CheckAnswerInTest()
            )
 
@@ -73,6 +78,11 @@ def register_functions_for_bot():
     """   Регистрация состояний пользователя   """
 
     bot.register_message_handler(state="*", text=['Отменить'], callback=delete_state_, pass_bot=True)
+
+    bot.register_message_handler(state=MyStates.choose_direction, callback=choose_direction, pass_bot=True, check_direction=True)
+    bot.register_message_handler(state=MyStates.choose_direction, callback=direction_incorrect, pass_bot=True, check_direction=False)
+
+
     bot.register_message_handler(state=MyStates.name, callback=get_user_name, pass_bot=True, check_name=True)
     bot.register_message_handler(state=MyStates.name, callback=name_incorrect, pass_bot=True, check_name=False)
 
@@ -99,12 +109,14 @@ def register_functions_for_bot():
     bot.register_message_handler(state=MyStates.question, callback=get_answer_to_question, pass_bot=True,
                                  check_answer_in_test=True)
 
-    bot.register_message_handler(state=MyStates.resume, callback=resume_answer_yes, pass_bot=True, check_answer=True)
-    bot.register_message_handler(state=MyStates.resume, callback=resume_answer_no, pass_bot=True, check_answer=True)
+    bot.register_message_handler(state=MyStates.resume, callback=receive_resume, pass_bot=True, check_file=True)
+    bot.register_message_handler(state=MyStates.resume, callback=resume_incorrect, pass_bot=True, check_file=False)
 
-    bot.register_message_handler(state=MyStates.receive_resume, callback=receive_resume, pass_bot=True, check_file=True)
-    bot.register_message_handler(state=MyStates.receive_resume, callback=resume_incorrect, pass_bot=True, check_file=False)
+    bot.register_message_handler(state=MyStates.university, callback=get_university, pass_bot=True, check_university=True)
+    bot.register_message_handler(state=MyStates.university, callback=university_incorrect, pass_bot=True, check_university=False)
 
+    bot.register_message_handler(state=MyStates.season, callback=get_season, pass_bot=True, check_season=True)
+    bot.register_message_handler(state=MyStates.season, callback=season_incorrect, pass_bot=True, check_season=False)
 
     """   Регистрация обработчиков нажатий на клавиатуру   """
 
@@ -114,22 +126,17 @@ def register_functions_for_bot():
                                         callback=callback.callback_test, pass_bot=True)
     bot.register_callback_query_handler(func=lambda callback: callback.data == "survey",
                                         callback=callback.callback_survey, pass_bot=True)
+    bot.register_callback_query_handler(func=lambda callback: callback.data == "resume",
+                                        callback=callback.callback_resume, pass_bot=True)
+    bot.register_callback_query_handler(func=lambda callback: callback.data == "university",
+                                        callback=callback.callback_university, pass_bot=True)
+    bot.register_callback_query_handler(func=lambda callback: callback.data == "season",
+                                        callback=callback.callback_season, pass_bot=True)
+    bot.register_callback_query_handler(func=lambda callback: callback.data == "info_personal_reception",
+                                        callback=callback.callback_info_personal_reception, pass_bot=True)
+    bot.register_callback_query_handler(func=lambda callback: callback.data == "feedback",
+                                        callback=callback.callback_feedback, pass_bot=True)
 
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "order_company_services",
-    #                                     callback=callback.callback_order_company_services, pass_bot=True)
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "other_plant",
-    #                                     callback=callback.callback_other_plant, pass_bot=True)
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "get_date",
-    #                                     callback=callbacks.callback_get_date, pass_bot=True)
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "call_to_the_client",
-    #                                     callback=callback_functions.callback_call_to_the_client, pass_bot=True)
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "contacts",
-    #                                     callback=callback_functions.callback_contacts, pass_bot=True)
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "remove_order",
-    #                                     callback=callback_functions.callback_cancel_the_order, pass_bot=True)
-    # bot.register_callback_query_handler(func=lambda callback: callback.data == "cancel_state_order",
-    #                                     callback=callback_functions.callback_cancel_state_order, pass_bot=True)
-    #
 
 
 register_functions_for_bot()

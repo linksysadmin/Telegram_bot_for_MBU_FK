@@ -12,10 +12,19 @@ def keyboard_enter_menu():
     key5 = types.InlineKeyboardButton(text='ВУЗ', callback_data='university')
     key6 = types.InlineKeyboardButton(text='Период', callback_data='season')
     key7 = types.InlineKeyboardButton(text='Личный прием граждан и организаций',
-                                      callback_data='info_about_personal_reception')
+                                      callback_data='info_personal_reception')
     key8 = types.InlineKeyboardButton(text='Получение обратной связи', callback_data='feedback')
     key9 = types.InlineKeyboardButton(text='Виртуальная экскурсия', url='https://youtu.be/0_mvah21iIU')
     keyboard.add(key1, key2, key3, key4, key5, key6, key7, key8, key9)
+    return keyboard
+
+
+def keyboard_for_survey():
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    key1 = types.KeyboardButton(text='Стажировка')
+    key2 = types.KeyboardButton(text='Практика')
+    key3 = types.KeyboardButton(text='Отменить')
+    keyboard.add(key1, key2, key3)
     return keyboard
 
 
@@ -23,7 +32,7 @@ def keyboard_for_test():
     """Keyboard for questions"""
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     key1 = types.KeyboardButton(text='Да, пройти тест')
-    key2 = types.KeyboardButton(text='Нет')
+    key2 = types.KeyboardButton(text='Отменить')
     keyboard.add(key1, key2)
     return keyboard
 
@@ -57,28 +66,40 @@ def keyboard_consent_to_send_data():
 def keyboard_yes_or_no():
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
     key1 = types.KeyboardButton(text='Да')
-    key2 = types.KeyboardButton(text='Нет')
-    key3 = types.KeyboardButton(text='Отменить')
-    keyboard.add(key1, key2, key3)
+    key2 = types.KeyboardButton(text='Отменить')
+    keyboard.add(key1, key2)
     return keyboard
 
 
 def keyboard_university():
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-    key1 = types.KeyboardButton(text='1. Ранхиг')
-    key2 = types.KeyboardButton(text='2. Финунивер')
-    key3 = types.KeyboardButton(text='3. РГГУ')
-    key4 = types.KeyboardButton(text='4. РУТ МИИТ')
-    key5 = types.KeyboardButton(text='5. ГУУ')
-    key6 = types.KeyboardButton(text='6. МИРЭА')
-    key7 = types.KeyboardButton(text='7. МИСИС')
-    key8 = types.KeyboardButton(text='8. РУДН')
-    key9 = types.KeyboardButton(text='9. РЭУ им. Плеханова')
-    key10 = types.KeyboardButton(text='10. ВАВТ')
-    key11 = types.KeyboardButton(text='11. МЭИ')
+    key1 = types.KeyboardButton(text='1.РАНХиГС')
+    key2 = types.KeyboardButton(text='2.Финунивер')
+    key3 = types.KeyboardButton(text='3.РГГУ')
+    key4 = types.KeyboardButton(text='4.РУТ МИИТ')
+    key5 = types.KeyboardButton(text='5.ГУУ')
+    key6 = types.KeyboardButton(text='6.МИРЭА')
+    key7 = types.KeyboardButton(text='7.МИСИС')
+    key8 = types.KeyboardButton(text='8.РУДН')
+    key9 = types.KeyboardButton(text='9.РЭУ им. Плеханова')
+    key10 = types.KeyboardButton(text='10.ВАВТ')
+    key11 = types.KeyboardButton(text='11.МЭИ')
     key12 = types.KeyboardButton(text='Отменить')
     keyboard.add(key1, key2, key3, key4, key5, key6, key7, key8, key9, key10, key11, key12)
     return keyboard
+
+
+def keyboard_seasons():
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
+    key1 = types.KeyboardButton(text='Весна')
+    key2 = types.KeyboardButton(text='Лето')
+    key3 = types.KeyboardButton(text='Осень')
+    key4 = types.KeyboardButton(text='Зима')
+    key5 = types.KeyboardButton(text='Отменить')
+    keyboard.add(key1, key2, key3, key4, key5)
+    return keyboard
+
+
 
 
 def keyboard_question1():

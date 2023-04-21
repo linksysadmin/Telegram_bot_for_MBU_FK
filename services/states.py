@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class MyStates(StatesGroup):
+    choose_direction = State()
     name = State()
     date_of_birthday = State()
     sex = State()
@@ -13,7 +14,6 @@ class MyStates(StatesGroup):
     phone_number = State()
     send_users_data = State()
 
-    receive_resume = State()
     resume = State()
 
     university = State()

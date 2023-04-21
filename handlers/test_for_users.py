@@ -2,7 +2,7 @@ import logging
 
 from handlers.keyboards import keyboard_question1, keyboard_question2, keyboard_question3, keyboard_question4, \
     keyboard_question5, keyboard_question6, keyboard_question7, keyboard_question8, keyboard_question9, \
-    keyboard_question10
+    keyboard_question10, remove_keyboard
 from services.states import MyStates
 
 logger = logging.getLogger(__name__)
@@ -46,6 +46,6 @@ def get_answer_to_question(message, bot):
                          reply_markup=keyboard_question10())
     elif message.text in ('Ислам', 'Иудаизм', 'Буддизм'):
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-            bot.send_message(message.chat.id, f'Тест пройден! Сумма ваших баллов: {data["test_score"]}')
+            remove_keyboard(message, bot, f'Тест пройден! Сумма ваших баллов: {data["test_score"]}')
             bot.delete_state(message.from_user.id, message.chat.id)
     logger.info(f'Состояние пользователя - {bot.get_state(message.from_user.id, message.chat.id)}')

@@ -2,10 +2,17 @@ import logging
 from datetime import datetime
 
 from handlers.keyboards import keyboard_sex, keyboard_consent_to_send_data, remove_keyboard, keyboard_enter_menu, \
-    keyboard_send_phone
+    keyboard_send_phone, keyboard_university
 from services.states import MyStates
 
 logger = logging.getLogger(__name__)
+
+
+def choose_direction(message, bot):
+    bot.add_data(message.from_user.id, message.chat.id, direction=message.text)
+    remove_keyboard(message, bot, 'Введите Ваши: Фамилию Имя Отчество через пробел')
+    bot.set_state(message.chat.id, MyStates.name, message.from_user.id)
+    logger.info(f'Состояние пользователя - {bot.get_state(message.from_user.id, message.chat.id)}')
 
 
 def get_user_name(message, bot):
@@ -20,7 +27,8 @@ def get_date_of_birthday(message, bot):
     """ STATE 2 - Получение дня рождения пользователя. """
     date_of_birthday = datetime.strptime(message.text, '%Y-%m-%d')
     today = datetime.today()
-    age = today.year - date_of_birthday.year - ((today.month, today.day) < (date_of_birthday.month, date_of_birthday.day))
+    age = today.year - date_of_birthday.year - (
+            (today.month, today.day) < (date_of_birthday.month, date_of_birthday.day))
     data = {
         'date_of_birthday': date_of_birthday.strftime('%Y-%m-%d'),
         'age': age
@@ -57,6 +65,39 @@ def get_user_phone(message, bot):
     bot.set_state(message.chat.id, MyStates.send_users_data, message.from_user.id)
 
 
+def receive_resume(message, bot):
+    file_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    src = message.document.file_name
+    with open(src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+    bot.delete_state(message.from_user.id, message.chat.id)
+    bot.send_message(message.chat.id, f'Резюме получено!', )
+    logger.info(f'State пользователя удалён -- {bot.get_state(message.from_user.id, message.chat.id)}')
+
+
+def get_university(message, bot):
+    bot.add_data(message.from_user.id, message.chat.id, university=message.text)
+    remove_keyboard(message, bot, 'Университет выбран')
+    bot.delete_state(message.from_user.id, message.chat.id)
+    logger.info(f'Состояние пользователя - {bot.get_state(message.from_user.id, message.chat.id)}')
+
+
+def get_season(message, bot):
+    bot.add_data(message.from_user.id, message.chat.id, season=message.text)
+    remove_keyboard(message, bot, 'Период выбран')
+    bot.delete_state(message.from_user.id, message.chat.id)
+    logger.info(f'Состояние пользователя - {bot.get_state(message.from_user.id, message.chat.id)}')
+
+
+def direction_incorrect(message, bot):
+    bot.send_message(message.chat.id, f'Направление не выбрано!')
+
+
+def resume_incorrect(message, bot):
+    bot.send_message(message.chat.id, f'Это не файл')
+
+
 def name_incorrect(message, bot):
     """Некорректный ввод имени"""
     bot.send_message(message.chat.id, 'Введите в формате: Фамилия Имя Отчество\nПример: Головин Николай Петрович')
@@ -79,6 +120,14 @@ def phone_incorrect(message, bot):
     """Некорректный ввод телефона"""
     bot.send_message(message.chat.id, 'Некорректный ввод.\nВведите в формате:\n\n"+7XXXXXXXXXX",\n'
                                       '8XXXXXXXXXX\n9XXXXXXXXX\n\nПример: 89953423452')
+
+
+def season_incorrect(message, bot):
+    bot.send_message(message.chat.id, 'Время года не выбрано!')
+
+
+def university_incorrect(message, bot):
+    bot.send_message(message.chat.id, 'Вы не выбрали университет из предложенных')
 
 
 def delete_state_(message, bot):

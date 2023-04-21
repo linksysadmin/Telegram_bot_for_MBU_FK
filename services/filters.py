@@ -7,6 +7,16 @@ import telebot
 logger = logging.getLogger(__name__)
 
 
+class CheckDirection(telebot.custom_filters.SimpleCustomFilter):
+    key = 'check_direction'
+
+    def check(self, message):
+        if message.text in ('Стажировка', 'Практика'):
+            return True
+        else:
+            return False
+
+
 class CheckUserName(telebot.custom_filters.SimpleCustomFilter):
     key = 'check_name'
 
@@ -78,7 +88,6 @@ class CheckConsent(telebot.custom_filters.SimpleCustomFilter):
             return False
 
 
-
 class CheckAnswer(telebot.custom_filters.SimpleCustomFilter):
     key = 'check_answer'
 
@@ -99,6 +108,27 @@ class CheckFile(telebot.custom_filters.SimpleCustomFilter):
             return False
 
 
+class CheckUniversity(telebot.custom_filters.SimpleCustomFilter):
+    key = 'check_university'
+
+    def check(self, message):
+        if message.text in ('1.РАНХиГС', '2.Финунивер', '3.РГГУ', '4.РУТ МИИТ', '5.ГУУ', '6.МИРЭА',
+                            '7.МИСИС', '8.РУДН', '9.РЭУ им. Плеханова', '10.ВАВТ', '11.МЭИ'):
+            return True
+        else:
+            return False
+
+
+
+class CheckSeason(telebot.custom_filters.SimpleCustomFilter):
+    key = 'check_season'
+
+    def check(self, message):
+        if message.text in ('Весна', 'Лето', 'Зима', 'Осень'):
+            return True
+        else:
+            return False
+
 
 
 class CheckAnswerInTest(telebot.custom_filters.SimpleCustomFilter):
@@ -106,10 +136,10 @@ class CheckAnswerInTest(telebot.custom_filters.SimpleCustomFilter):
 
     def check(self, message):
         if message.text in (
-        '4', '9', '2', 'Зеленый', 'Желтый', 'Синий', 'Бразилия', 'Канада', 'Мексика', 'Варшава', 'Париж',
-        'Иерусалим', 'Умный', 'Смешной', 'Спящий', 'Серебро', 'Медь', 'Золото', 'Медсестра',
-        'Костоправ', 'Хирург', 'Квадрат', 'Круг', 'Треугольник', 'Кенгуру', 'Коала', 'Лев', 'Ислам',
-        'Иудаизм', 'Буддизм'):
+                '4', '9', '2', 'Зеленый', 'Желтый', 'Синий', 'Бразилия', 'Канада', 'Мексика', 'Варшава', 'Париж',
+                'Иерусалим', 'Умный', 'Смешной', 'Спящий', 'Серебро', 'Медь', 'Золото', 'Медсестра',
+                'Костоправ', 'Хирург', 'Квадрат', 'Круг', 'Треугольник', 'Кенгуру', 'Коала', 'Лев', 'Ислам',
+                'Иудаизм', 'Буддизм'):
             return True
         else:
             return False
