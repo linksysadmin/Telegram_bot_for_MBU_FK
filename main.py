@@ -147,23 +147,23 @@ def register_functions_for_bot():
 
 
 register_functions_for_bot()
-bot.infinity_polling(skip_pending=True)
-# app = flask.Flask(__name__)
+# bot.infinity_polling(skip_pending=True)
+app = flask.Flask(__name__)
 
 
-# @app.route('/', methods=['GET', 'HEAD'])
-# def index():
-#     return 'OK'
-#
-#
-# # Обработка POST-запроса от Telegram Bot API
-# @app.route(WEBHOOK_URL_PATH, methods=['POST'])
-# def webhook():
-#     """Обработка http-запросов, которые telegram пересылает на наш сервер"""
-#     if flask.request.headers.get('content-type') == 'application/json':
-#         json_string = flask.request.get_data().decode('utf-8')
-#         update = telebot.types.Update.de_json(json_string)
-#         bot.process_new_updates([update])
-#         return ''
-#     else:
-#         flask.abort(403)
+@app.route('/', methods=['GET', 'HEAD'])
+def index():
+    return 'OK'
+
+
+# Обработка POST-запроса от Telegram Bot API
+@app.route(WEBHOOK_URL_PATH, methods=['POST'])
+def webhook():
+    """Обработка http-запросов, которые telegram пересылает на наш сервер"""
+    if flask.request.headers.get('content-type') == 'application/json':
+        json_string = flask.request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return ''
+    else:
+        flask.abort(403)
