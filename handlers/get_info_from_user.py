@@ -1,8 +1,11 @@
+import json
 import logging
 from datetime import datetime
 
+from config import REDIS, TELEGRAM_GROUP_CHAT_ID
 from handlers.keyboards import keyboard_sex, keyboard_consent_to_send_data, remove_keyboard, keyboard_enter_menu, \
     keyboard_send_phone, keyboard_university
+from services.send_info_to_database import update_data
 from services.states import MyStates
 
 logger = logging.getLogger(__name__)
@@ -66,26 +69,26 @@ def get_user_phone(message, bot):
 
 
 def receive_resume(message, bot):
-    file_info = bot.get_file(message.document.file_id)
-    downloaded_file = bot.download_file(file_info.file_path)
-    src = message.document.file_name
-    with open(src, 'wb') as new_file:
-        new_file.write(downloaded_file)
+    bot.send_document(chat_id=TELEGRAM_GROUP_CHAT_ID, document=message.document.file_id,
+                      caption=f'Резюме от пользователя:\n{message.from_user.first_name}',
+                      disable_content_type_detection=True)
     bot.delete_state(message.from_user.id, message.chat.id)
     bot.send_message(message.chat.id, f'Резюме получено!', )
     logger.info(f'State пользователя удалён -- {bot.get_state(message.from_user.id, message.chat.id)}')
 
 
 def get_university(message, bot):
-    bot.add_data(message.from_user.id, message.chat.id, university=message.text)
-    remove_keyboard(message, bot, 'Университет выбран')
+    direction = json.loads(REDIS.get(f'user:{message.from_user.id}:check_direction'))
+    update_data(f'{direction}', 'university', message.text, message.from_user.id)
+    remove_keyboard(message, bot, 'Университет выбран. Теперь пройдите тест: /test')
     bot.delete_state(message.from_user.id, message.chat.id)
     logger.info(f'Состояние пользователя - {bot.get_state(message.from_user.id, message.chat.id)}')
 
 
 def get_season(message, bot):
-    bot.add_data(message.from_user.id, message.chat.id, season=message.text)
-    remove_keyboard(message, bot, 'Период выбран')
+    direction = json.loads(REDIS.get(f'user:{message.from_user.id}:check_direction'))
+    update_data(f'{direction}', 'season', message.text, message.from_user.id)
+    remove_keyboard(message, bot, 'Период выбран. Теперь выберите ВУЗ нажав: /university')
     bot.delete_state(message.from_user.id, message.chat.id)
     logger.info(f'Состояние пользователя - {bot.get_state(message.from_user.id, message.chat.id)}')
 

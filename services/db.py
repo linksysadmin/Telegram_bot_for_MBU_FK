@@ -22,10 +22,8 @@ def fetch_all(sql: str, params: Any | None = None) -> list[tuple]:
     res = cur.execute(sql, params)
     rows = res.fetchall()
     con.close()
-    results = []
-    for row in rows:
-        results.append(row)
-    return results
+    return rows
+
 
 
 if __name__ == '__main__':

@@ -4,6 +4,8 @@ from datetime import datetime
 
 import telebot
 
+from config import REDIS
+
 logger = logging.getLogger(__name__)
 
 
@@ -119,7 +121,6 @@ class CheckUniversity(telebot.custom_filters.SimpleCustomFilter):
             return False
 
 
-
 class CheckSeason(telebot.custom_filters.SimpleCustomFilter):
     key = 'check_season'
 
@@ -128,7 +129,6 @@ class CheckSeason(telebot.custom_filters.SimpleCustomFilter):
             return True
         else:
             return False
-
 
 
 class CheckAnswerInTest(telebot.custom_filters.SimpleCustomFilter):
@@ -143,3 +143,12 @@ class CheckAnswerInTest(telebot.custom_filters.SimpleCustomFilter):
             return True
         else:
             return False
+
+
+def check_user_in_direction(user_id: int) -> bool:
+    direction = REDIS.get(f'user:{user_id}:check_direction')
+    logger.info(f'{direction}: {user_id}')
+    if direction is not None:
+        return True
+    else:
+        return False

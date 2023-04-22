@@ -7,7 +7,7 @@ def keyboard_enter_menu():
     key1 = types.InlineKeyboardButton(text='Общая информация о стажировках/практиках',
                                       callback_data='info')
     key2 = types.InlineKeyboardButton(text='Первичный (пройти) тест', callback_data='test')
-    key3 = types.InlineKeyboardButton(text='Анкета', callback_data='survey')
+    key3 = types.InlineKeyboardButton(text='Пройти анкетирование', callback_data='survey')
     key4 = types.InlineKeyboardButton(text='Прикрепить резюме', callback_data='resume')
     key5 = types.InlineKeyboardButton(text='ВУЗ', callback_data='university')
     key6 = types.InlineKeyboardButton(text='Период', callback_data='season')

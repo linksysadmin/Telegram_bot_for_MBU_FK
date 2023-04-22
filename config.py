@@ -1,7 +1,7 @@
 import os
+
+import redis
 from dotenv import load_dotenv
-
-
 
 load_dotenv()
 
@@ -13,3 +13,4 @@ TELEGRAM_GROUP_CHAT_ID = os.getenv('TELEGRAM_GROUP_CHAT_ID')
 PASSWORD_FOR_ADMIN = os.getenv('PASSWORD_FOR_ADMIN')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+REDIS = redis.Redis(host='localhost', port=6379, db=0)

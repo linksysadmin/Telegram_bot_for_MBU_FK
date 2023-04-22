@@ -9,7 +9,8 @@ from telebot.storage import StateRedisStorage
 
 from config import TELEGRAM_BOT_API_TOKEN, WEBHOOK_URL_PATH
 from handlers import callback
-from handlers.commands import start, info, test_, survey, resume, university, info_personal_reception, season, feedback
+from handlers.commands import start, info, test_, survey, resume, university, info_personal_reception, season, feedback, \
+    get_excel_and_send_to_user
 from handlers.get_info_from_user import get_user_name, get_date_of_birthday, name_incorrect, date_incorrect, \
     get_user_sex, sex_incorrect, get_user_email, email_incorrect, get_user_phone, phone_incorrect, delete_state_, \
     get_university, university_incorrect, receive_resume, resume_incorrect, choose_direction, direction_incorrect, \
@@ -27,7 +28,7 @@ logging.basicConfig(handlers=(logging.StreamHandler(),),
 
 logger = logging.getLogger(__name__)
 
-bot = telebot.TeleBot(TELEGRAM_BOT_API_TOKEN, state_storage=StateRedisStorage(db=1), parse_mode='HTML')
+bot = telebot.TeleBot(TELEGRAM_BOT_API_TOKEN, state_storage=StateRedisStorage(), parse_mode='HTML')
 
 FILTERS = (custom_filters.StateFilter(bot),
            custom_filters.IsDigitFilter(),
@@ -58,6 +59,7 @@ COMMAND_HANDLERS = {
     "season": season,
     "info_personal_reception": info_personal_reception,
     "feedback": feedback,
+    "get_excel": get_excel_and_send_to_user,
 }
 
 
