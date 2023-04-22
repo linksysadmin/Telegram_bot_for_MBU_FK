@@ -9,6 +9,7 @@ from telebot.storage import StateRedisStorage
 
 from config import TELEGRAM_BOT_API_TOKEN, WEBHOOK_URL_PATH
 from handlers import callback
+from handlers.administrator_function import check_password_and_add_admin_to_db
 from handlers.commands import start, info, test_, survey, resume, university, info_personal_reception, season, feedback, \
     get_excel_and_send_to_user
 from handlers.get_info_from_user import get_user_name, get_date_of_birthday, name_incorrect, date_incorrect, \
@@ -81,9 +82,10 @@ def register_functions_for_bot():
 
     bot.register_message_handler(state="*", text=['Отменить'], callback=delete_state_, pass_bot=True)
 
-    bot.register_message_handler(state=MyStates.choose_direction, callback=choose_direction, pass_bot=True, check_direction=True)
-    bot.register_message_handler(state=MyStates.choose_direction, callback=direction_incorrect, pass_bot=True, check_direction=False)
-
+    bot.register_message_handler(state=MyStates.choose_direction, callback=choose_direction, pass_bot=True,
+                                 check_direction=True)
+    bot.register_message_handler(state=MyStates.choose_direction, callback=direction_incorrect, pass_bot=True,
+                                 check_direction=False)
 
     bot.register_message_handler(state=MyStates.name, callback=get_user_name, pass_bot=True, check_name=True)
     bot.register_message_handler(state=MyStates.name, callback=name_incorrect, pass_bot=True, check_name=False)
@@ -114,11 +116,15 @@ def register_functions_for_bot():
     bot.register_message_handler(state=MyStates.resume, callback=receive_resume, pass_bot=True, check_file=True)
     bot.register_message_handler(state=MyStates.resume, callback=resume_incorrect, pass_bot=True, check_file=False)
 
-    bot.register_message_handler(state=MyStates.university, callback=get_university, pass_bot=True, check_university=True)
-    bot.register_message_handler(state=MyStates.university, callback=university_incorrect, pass_bot=True, check_university=False)
+    bot.register_message_handler(state=MyStates.university, callback=get_university, pass_bot=True,
+                                 check_university=True)
+    bot.register_message_handler(state=MyStates.university, callback=university_incorrect, pass_bot=True,
+                                 check_university=False)
 
     bot.register_message_handler(state=MyStates.season, callback=get_season, pass_bot=True, check_season=True)
     bot.register_message_handler(state=MyStates.season, callback=season_incorrect, pass_bot=True, check_season=False)
+
+    bot.register_message_handler(state=MyStates.password, callback=check_password_and_add_admin_to_db, pass_bot=True)
 
     """   Регистрация обработчиков нажатий на клавиатуру   """
 
@@ -138,7 +144,6 @@ def register_functions_for_bot():
                                         callback=callback.callback_info_personal_reception, pass_bot=True)
     bot.register_callback_query_handler(func=lambda callback: callback.data == "feedback",
                                         callback=callback.callback_feedback, pass_bot=True)
-
 
 
 register_functions_for_bot()

@@ -45,10 +45,27 @@ def update_data(table_name: str, column_name: str, value: (str, int), user_id: i
     )
 
 
-if __name__ == '__main__':
+def add_admin_to_db(user_id: int):
+    try:
+        execute(
+            sql="""INSERT INTO administrators (user_id) VALUES (?)""",
+            params=(user_id,)
+        )
+        logger.info(f'Админ: {user_id} - добавлен в БД')
+        return True
+    except IntegrityError:
+        logger.error(f'Уже есть этот Админ: {user_id} в БД')
+        return False
 
-    add_survey_data_to_db('practice', 'Эдуард вкекеыв Звягинцев', '2002-03-23', 21,
-                        'Мужской', 'ex@csa.com', '+3523523422', 123213213)
-    update_data('practice', 'phone', '+sgrtsgrt', 335)
-    print(check_user_in_database(123213212, 'practice'))
-    pprint.pprint(fetch_all_from_table('practice'))
+
+def check_admin_in_db(user_id: int):
+    result = fetch_all(
+        sql="""SELECT * FROM administrators WHERE user_id = ?""",
+        params=(user_id,)
+    )
+    return bool(len(result))
+
+
+if __name__ == '__main__':
+    add_admin_to_db(23426342)
+    print(check_admin_in_db(234234342))

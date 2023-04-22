@@ -5,6 +5,7 @@ from handlers.keyboards import remove_keyboard, keyboard_enter_menu, keyboard_fo
     keyboard_university, keyboard_for_survey, keyboard_seasons
 from services.filters import check_user_in_direction
 from services.get_excel_file import get_excel_file
+from services.send_info_to_database import check_admin_in_db
 from services.states import MyStates
 
 logger = logging.getLogger(__name__)
@@ -104,14 +105,19 @@ def feedback(message, bot):
 
 
 def get_excel_and_send_to_user(message, bot):
+
     if bot.get_state(message.from_user.id, message.chat.id) is not None:
         bot.delete_state(message.from_user.id, message.chat.id)
         remove_keyboard(message, bot, 'Отменено')
-    path_to_file = get_excel_file()
-    with open(path_to_file, 'rb') as f:
-        file_data = f.read()
-    bot.send_document(chat_id=message.chat.id, document=file_data, visible_file_name='пользователи.xlsx')
-    bot.delete_state(message.from_user.id, message.chat.id)
+    if check_admin_in_db(message.from_user.id) is True:
+        path_to_file = get_excel_file()
+        with open(path_to_file, 'rb') as f:
+            file_data = f.read()
+        bot.send_document(chat_id=message.chat.id, document=file_data, visible_file_name='пользователи.xlsx')
+        bot.delete_state(message.from_user.id, message.chat.id)
+    else:
+        bot.send_message(message.chat.id, 'Введите пароль: ')
+        bot.set_state(message.chat.id, MyStates.password, message.from_user.id)
     logger.info(f'State пользователя удалён -- {bot.get_state(message.from_user.id, message.chat.id)}')
 
 

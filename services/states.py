@@ -22,3 +22,4 @@ class MyStates(StatesGroup):
     test = State()
     question = State()
 
+    password = State()
