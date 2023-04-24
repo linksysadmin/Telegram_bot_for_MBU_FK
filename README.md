@@ -1,6 +1,8 @@
 # telegram_bot_for_university
 
 
+cat create_db.sql | sqlite3 database.db
+
 Меню:
 
 /start - приветственное сообщение + меню

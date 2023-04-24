@@ -1,5 +1,4 @@
 import logging
-import pprint
 
 from sqlite3 import IntegrityError
 from services.db import execute, fetch_all
@@ -67,5 +66,4 @@ def check_admin_in_db(user_id: int):
 
 
 if __name__ == '__main__':
-    add_admin_to_db(23426342)
-    print(check_admin_in_db(234234342))
+    pass

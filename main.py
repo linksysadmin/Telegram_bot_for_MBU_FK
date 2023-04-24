@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
+from logging.handlers import TimedRotatingFileHandler
 import flask
 import telebot
 from telebot import custom_filters
@@ -22,7 +22,11 @@ from services.states import MyStates
 from services.filters import CheckDate, CheckPhoneNumber, CheckUserName, CheckSex, CheckConsent, CheckEmail, \
     CheckAnswerInTest, ContactForm, CheckAnswer, CheckFile, CheckUniversity, CheckDirection, CheckSeason
 
-logging.basicConfig(handlers=(logging.StreamHandler(),),
+
+handler = TimedRotatingFileHandler('logs/kwork_project_telegram_bot_for_university.log', when='D', interval=10)
+handler.setFormatter(logging.Formatter('%(name)s %(asctime)s - %(levelname)s - %(message)s'))
+
+logging.basicConfig(handlers=[handler],
                     format="%(name)s %(asctime)s - %(levelname)s - %(message)s",
                     datefmt='%m.%d.%Y %H:%M:%S',
                     level=logging.INFO)
@@ -147,23 +151,23 @@ def register_functions_for_bot():
 
 
 register_functions_for_bot()
-# bot.infinity_polling(skip_pending=True)
-app = flask.Flask(__name__)
-
-
-@app.route('/', methods=['GET', 'HEAD'])
-def index():
-    return 'OK'
-
-
+bot.infinity_polling(skip_pending=True)
+# app = flask.Flask(__name__)
+#
+#
+# @app.route('/', methods=['GET', 'HEAD'])
+# def index():
+#     return 'OK'
+#
+#
 # Обработка POST-запроса от Telegram Bot API
-@app.route(WEBHOOK_URL_PATH, methods=['POST'])
-def webhook():
-    """Обработка http-запросов, которые telegram пересылает на наш сервер"""
-    if flask.request.headers.get('content-type') == 'application/json':
-        json_string = flask.request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return ''
-    else:
-        flask.abort(403)
+# @app.route(WEBHOOK_URL_PATH, methods=['POST'])
+# def webhook():
+#     """Обработка http-запросов, которые telegram пересылает на наш сервер"""
+#     if flask.request.headers.get('content-type') == 'application/json':
+#         json_string = flask.request.get_data().decode('utf-8')
+#         update = telebot.types.Update.de_json(json_string)
+#         bot.process_new_updates([update])
+#         return ''
+#     else:
+#         flask.abort(403)

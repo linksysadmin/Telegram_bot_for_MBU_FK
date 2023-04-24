@@ -1,5 +1,7 @@
 import logging
+import os
 
+from config import BASE_DIR
 from handlers.text_messages import TEXT_MESSAGES
 from handlers.keyboards import remove_keyboard, keyboard_enter_menu, keyboard_for_test, \
     keyboard_university, keyboard_for_survey, keyboard_seasons
@@ -12,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def start(message, bot):
-    logger.info(f'User {message.from_user.first_name} started a conversation with the bot')
+    logger.info(f'User {message.from_user.first_name} (id: {message.from_user.id}) started a conversation')
     if bot.get_state(message.from_user.id, message.chat.id) is not None:
         bot.delete_state(message.from_user.id, message.chat.id)
         remove_keyboard(message, bot, 'Отменено')
@@ -105,20 +107,18 @@ def feedback(message, bot):
 
 
 def get_excel_and_send_to_user(message, bot):
-
     if bot.get_state(message.from_user.id, message.chat.id) is not None:
         bot.delete_state(message.from_user.id, message.chat.id)
+        logger.info(f'State пользователя удалён -- {bot.get_state(message.from_user.id, message.chat.id)}')
         remove_keyboard(message, bot, 'Отменено')
     if check_admin_in_db(message.from_user.id) is True:
-        path_to_file = get_excel_file()
-        with open(path_to_file, 'rb') as f:
-            file_data = f.read()
-        bot.send_document(chat_id=message.chat.id, document=file_data, visible_file_name='пользователи.xlsx')
+        if get_excel_file() is True:
+            with open(f'{BASE_DIR}/excel_files/пользователи.xlsx', 'rb') as f:
+                bot.send_document(chat_id=message.chat.id, document=f)
         bot.delete_state(message.from_user.id, message.chat.id)
     else:
         bot.send_message(message.chat.id, 'Введите пароль: ')
         bot.set_state(message.chat.id, MyStates.password, message.from_user.id)
-    logger.info(f'State пользователя удалён -- {bot.get_state(message.from_user.id, message.chat.id)}')
 
 
 commands_to_message = {
